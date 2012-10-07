@@ -8,7 +8,7 @@ How to Use
 
 Add keybindings for `prev_view_in_group` and `next_view_in_group` at **Preferences -> Key binding -> User** or **Command Palette : Preferences : Key Bindings - User**. My example bindings on OS X:
 
-    // Enable tab rearrangement
+    // Switch view
     { "keys": ["super+shift+["], "command": "prev_view_in_group" },
     { "keys": ["super+shift+]"], "command": "next_view_in_group" },
 
