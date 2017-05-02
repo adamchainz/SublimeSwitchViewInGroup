@@ -7,6 +7,9 @@ def move_view_in_group(window, amount):
     group, index = window.get_view_index(active_view)
     active_group_views = window.views_in_group(active_group)
 
+    if index == -1:
+        return
+
     index += amount
     if index == len(active_group_views):
         index = 0
