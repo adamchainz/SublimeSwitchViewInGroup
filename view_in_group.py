@@ -1,18 +1,31 @@
+import sublime
+import sublime_plugin
 
-import sublime, sublime_plugin
+# The API for tabs up until version 3055 was 'views', then it got wrapped with
+# 'sheets' which allow opening images.
 
-# Sublime Text added the ability to open images in version 3055.
-# From then onwards every ST buffer has a sheet, which can hold
-# either a view or an image. By using sheets instead of views to
-# switch focus through the group's tabs, the plugin continues to
-# function correctly when an image is open in a ST 3055+ group.
+USE_SHEETS = int(sublime.version()) >= 3055
 
-SHEETS_ADDED_VERSION = 3055
-SUBLIME_TEXT_VERSION = int(sublime.version())
+
+class NextViewInGroupCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        if USE_SHEETS:
+            move_sheet_in_group(self.window, 1)
+        else:
+            move_view_in_group(self.window, 1)
+
+
+class PrevViewInGroupCommand(sublime_plugin.WindowCommand):
+
+    def run(self):
+        if USE_SHEETS:
+            move_sheet_in_group(self.window, -1)
+        else:
+            move_view_in_group(self.window, -1)
 
 
 def move_sheet_in_group(window, amount):
-
     active_group = window.active_group()
     active_sheet = window.active_sheet()
     group, index = window.get_sheet_index(active_sheet)
@@ -33,7 +46,6 @@ def move_sheet_in_group(window, amount):
 
 
 def move_view_in_group(window, amount):
-
     active_group = window.active_group()
     active_view = window.active_view()
     group, index = window.get_view_index(active_view)
@@ -51,23 +63,3 @@ def move_view_in_group(window, amount):
 
     view_to_focus = active_group_views[index]
     window.focus_view(view_to_focus)
-
-
-class NextViewInGroupCommand(sublime_plugin.WindowCommand):
-
-    def run(self):
-
-        if SUBLIME_TEXT_VERSION >= SHEETS_ADDED_VERSION:
-            move_sheet_in_group(self.window, 1)
-        else:
-            move_view_in_group(self.window, 1)
-
-
-class PrevViewInGroupCommand(sublime_plugin.WindowCommand):
-
-    def run(self):
-
-        if SUBLIME_TEXT_VERSION >= SHEETS_ADDED_VERSION:
-            move_sheet_in_group(self.window, -1)
-        else:
-            move_view_in_group(self.window, -1)
